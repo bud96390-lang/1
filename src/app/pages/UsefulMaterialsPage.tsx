@@ -331,77 +331,150 @@ export default function UsefulMaterialsPage() {
 
               {/* Materials Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-                {category.materials.map((material, index) => (
-                  <motion.div
-                    key={material.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{
-                      duration: 0.6,
-                      delay: 0.1 * index,
-                      ease: [0.16, 1, 0.3, 1]
-                    }}
-                    whileHover={{ scale: 1.02, y: -4 }}
-                    className={`relative group overflow-hidden rounded-3xl p-6 sm:p-8
-                      backdrop-blur-xl bg-gradient-to-br ${material.gradient}
-                      border border-white/20 shadow-2xl
-                      transition-all duration-500
-                      hover:border-white/40 hover:shadow-[0_20px_60px_rgba(255,255,255,0.15)]`}
-                  >
-                    {/* Shimmer effect */}
+                {category.materials.map((material, index) => {
+                  // Define color variations for each card (matching ClubHome style)
+                  const colorVariants = [
+                    { from: 'rgba(16,185,129,0.15)', via: 'rgba(5,150,105,0.1)', glow: 'rgba(16,185,129,0.3)' }, // Emerald
+                    { from: 'rgba(139,92,246,0.15)', via: 'rgba(167,139,250,0.1)', glow: 'rgba(139,92,246,0.3)' }, // Purple
+                    { from: 'rgba(6,182,212,0.15)', via: 'rgba(34,211,238,0.1)', glow: 'rgba(6,182,212,0.3)' }, // Cyan
+                    { from: 'rgba(236,72,153,0.15)', via: 'rgba(244,114,182,0.1)', glow: 'rgba(236,72,153,0.3)' }, // Pink
+                  ];
+                  const colors = colorVariants[index % colorVariants.length];
+
+                  return (
                     <motion.div
-                      className="absolute inset-0 opacity-0 group-hover:opacity-100"
-                      style={{
-                        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent)',
-                      }}
-                      animate={{
-                        x: ['-100%', '200%'],
-                      }}
+                      key={material.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
                       transition={{
-                        duration: 1.5,
-                        repeat: Infinity,
-                        repeatDelay: 1,
+                        duration: 0.6,
+                        delay: 0.1 * index,
+                        ease: [0.16, 1, 0.3, 1]
                       }}
-                    />
-
-                    <div className="relative z-10">
-                      {/* Title */}
-                      <h3 className="text-base sm:text-lg md:text-xl mb-4 sm:mb-5 text-white leading-snug sm:leading-relaxed min-h-[2.5rem] sm:min-h-[3rem]" 
-                          style={{ fontWeight: 300 }}>
-                        {material.title}
-                      </h3>
-
-                      {/* Button */}
-                      <motion.button
-                        onClick={() => handleMaterialClick(material.url)}
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        className="flex items-center gap-2 px-6 py-3 rounded-full
-                          bg-white/20 backdrop-blur-sm border border-white/30
-                          text-white font-light
-                          hover:bg-white/30 transition-all duration-300"
-                      >
-                        <ExternalLink className="w-4 h-4" strokeWidth={1.5} />
-                        <span>Смотреть</span>
-                      </motion.button>
-
-                      {/* Decorative glowing element */}
+                      whileHover={{ scale: 1.03, y: -8 }}
+                      whileTap={{ scale: 0.97 }}
+                      className="group relative overflow-hidden rounded-3xl p-6 sm:p-8 backdrop-blur-xl shadow-lg hover:shadow-[0_20px_80px_rgba(172,198,239,0.4)] border-2 border-white/30 hover:border-white/60 transition-all duration-500"
+                      style={{
+                        background: `linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(216,236,250,0.8) 50%, ${colors.from} 100%)`,
+                      }}
+                    >
+                      {/* Animated gradient background with accent color */}
                       <motion.div
-                        className="absolute -bottom-4 -right-4 w-20 h-20 rounded-full bg-white/10 blur-2xl"
+                        className="absolute inset-0"
                         animate={{
-                          scale: [1, 1.3, 1],
-                          opacity: [0.2, 0.4, 0.2],
+                          background: [
+                            `linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(216,236,250,0.8) 50%, ${colors.from} 100%)`,
+                            `linear-gradient(135deg, rgba(216,236,250,0.85) 0%, ${colors.via} 50%, rgba(255,255,255,0.95) 100%)`,
+                            `linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(216,236,250,0.8) 50%, ${colors.from} 100%)`,
+                          ]
                         }}
                         transition={{
-                          duration: 4,
+                          duration: 8,
                           repeat: Infinity,
-                          ease: "easeInOut",
-                          delay: index * 0.3
+                          ease: "easeInOut"
                         }}
                       />
-                    </div>
-                  </motion.div>
-                ))}
+
+                      {/* Glow effect on hover with accent color */}
+                      <motion.div
+                        className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                        style={{
+                          background: `radial-gradient(circle at 50% 50%, ${colors.glow}, transparent 70%)`,
+                          filter: 'blur(30px)',
+                        }}
+                      />
+
+                      {/* Animated orb effect with accent color */}
+                      <motion.div
+                        className="absolute w-32 h-32 rounded-full blur-2xl opacity-0 group-hover:opacity-100"
+                        style={{
+                          background: colors.glow,
+                          top: '20%',
+                          left: '10%'
+                        }}
+                        animate={{
+                          x: [0, 50, 0],
+                          y: [0, 30, 0],
+                        }}
+                        transition={{
+                          duration: 6,
+                          repeat: Infinity,
+                          ease: "easeInOut"
+                        }}
+                      />
+
+                      {/* Border glow */}
+                      <motion.div
+                        className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                        style={{
+                          boxShadow: `inset 0 0 80px ${colors.glow}, 0 0 60px ${colors.glow}`,
+                        }}
+                      />
+
+                      {/* Shimmer effect */}
+                      <motion.div
+                        className="absolute inset-0 opacity-0 group-hover:opacity-100"
+                        animate={{
+                          background: [
+                            'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.8) 50%, transparent 100%)',
+                            'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.8) 50%, transparent 100%)',
+                          ],
+                          x: ['-100%', '200%'],
+                        }}
+                        transition={{
+                          duration: 1.5,
+                          repeat: Infinity,
+                          repeatDelay: 2,
+                        }}
+                      />
+
+                      <div className="relative z-10 flex flex-col h-full">
+                        {/* Icon */}
+                        <motion.div 
+                          className="mb-4 inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16
+                            rounded-2xl bg-white/40 backdrop-blur-sm
+                            border border-white/40
+                            shadow-lg self-start"
+                          whileHover={{ 
+                            rotate: [0, -8, 8, 0],
+                            scale: 1.1,
+                          }}
+                          transition={{ duration: 0.6 }}
+                        >
+                          <BookOpen className="w-7 h-7 sm:w-8 sm:h-8 text-[#ACC6EF]" strokeWidth={1.5} style={{ filter: 'drop-shadow(0 0 8px rgba(172,198,239,0.5))' }} />
+                        </motion.div>
+
+                        {/* Title */}
+                        <h3 className="text-base sm:text-lg mb-4 text-[#1D1D1B] leading-relaxed flex-grow" style={{ fontWeight: 300 }}>
+                          {material.title}
+                        </h3>
+
+                        {/* Button */}
+                        <motion.button
+                          onClick={() => handleMaterialClick(material.url)}
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                          className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl
+                            bg-[#ACC6EF]/80 hover:bg-[#ACC6EF] backdrop-blur-sm
+                            border border-[#ACC6EF]/50
+                            transition-all duration-300 shadow-md hover:shadow-lg
+                            self-start"
+                        >
+                          <span className="text-sm text-[#1D1D1B] font-medium">Открыть</span>
+                          <ExternalLink className="w-4 h-4 text-[#1D1D1B]" strokeWidth={1.5} />
+                        </motion.button>
+                      </div>
+
+                      {/* Gradient accent line with animation */}
+                      <motion.div
+                        className="absolute bottom-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#ACC6EF] via-[#D8ECFA] to-[#ACC6EF]"
+                        initial={{ scaleX: 0, opacity: 0.5 }}
+                        whileHover={{ scaleX: 1, opacity: 1 }}
+                        transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                      />
+                    </motion.div>
+                  );
+                })}
               </div>
             </motion.div>
           ))}

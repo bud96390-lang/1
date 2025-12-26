@@ -2,7 +2,7 @@ import { motion } from 'motion/react';
 import { ElementParticles } from '../components/ElementParticles';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
-import { Home, MessageSquare, Clock, AlertCircle } from 'lucide-react';
+import { Home, MessageSquare, Clock, AlertCircle, ExternalLink, List } from 'lucide-react';
 
 interface Review {
   id: string;
@@ -10,6 +10,8 @@ interface Review {
   date: string;
   note?: string;
   gradient: string;
+  link?: string;
+  timecodes?: string[];
 }
 
 const mockReviews: Review[] = [
@@ -18,12 +20,43 @@ const mockReviews: Review[] = [
     title: 'Активирующее действие для результата и перехода на другую ветку вероятности',
     date: '24 декабря',
     note: 'необходимо присутствие на эфире',
-    gradient: 'from-amber-500/20 via-yellow-500/20 to-amber-600/20'
+    gradient: 'from-amber-500/20 via-yellow-500/20 to-amber-600/20',
+    link: 'https://t.me/your_telegram_channel',
+    timecodes: [
+      '00:00 Понимание кризиса и отсутствие желаний как запрос к изменениям',
+      '03:32 Кризис и отрицание реальности: как избежать разрыва с собой',
+      '07:02 Кризис как точка перехода: понимание инициации изменений',
+      '10:33 Управляемый и неуправляемый кризис: циклы обновления в экономике и жизни',
+      '14:03 Преодоление кризиса идентичности и смыслов',
+      '17:34 Путь к восстановлению: от истощения к росту',
+      '21:04 Кризисы и рост: как выйти на новый уровень',
+      '24:34 Преодоление кризиса: выход на новый уровень',
+      '28:05 Разделение понятий роста и восстановления',
+      '31:35 Инициация ответственности через финансовые обязательства',
+      '35:05 Кризис и его влияние на бизнес и личные отношения',
+      '38:35 Преодоление кризиса: личный опыт и важность поддержки',
+      '42:09 Кризис смыслов и личная инициация',
+      '45:40 Смена идентичности и ответственность в личном развитии',
+      '49:10 Преодоление кризиса и осознание ценности',
+      '52:40 Управление эмоциональным состоянием и адекватные ожидания',
+      '56:12 Преодоление кризиса и планирование на год вперёд',
+      '59:43 Преодоление иллюзий о количестве задач и поиск качественного дофамина',
+      '01:03:13 Психология дофамина: как правильно себя мотивировать',
+      '01:06:43 Анализ чувств и ответственности в работе с клиентом',
+      '01:10:13 Преодоление некомфорта в разговоре о работе',
+      '01:13:46 Преодоление эмоциональных барьеров в диалоге',
+      '01:17:17 Самоценность и осознанность в отношениях',
+      '01:20:48 Многослойность жизни: как управлять процессами одновременно',
+      '01:24:18 Многослойность жизни: как совмещать разные процессы',
+      '01:27:49 Многослойность манифестаций и развитие процессов',
+      '01:31:21 Развитие манифестации в разных сферах жизни',
+      '01:34:51 Методы запоминания и завершение встречи',
+    ]
   },
   {
     id: '2',
     title: 'Разборы для помогающих специалистов: коучей, эзотериков различных направлений, психологов, наставников «Точка роста»',
-    date: '12 января',
+    date: '13 января',
     gradient: 'from-purple-500/20 via-violet-500/20 to-purple-600/20'
   },
 ];
@@ -31,6 +64,8 @@ const mockReviews: Review[] = [
 export default function ReviewsPage() {
   const navigate = useNavigate();
   const [activeElement, setActiveElement] = useState<'water' | 'air' | 'earth' | 'fire'>('earth');
+  const [showTimecodes, setShowTimecodes] = useState(false);
+  const [selectedTimecodes, setSelectedTimecodes] = useState<string[]>([]);
 
   useEffect(() => {
     const elements: Array<'water' | 'air' | 'earth' | 'fire'> = ['water', 'air', 'earth', 'fire'];
@@ -170,55 +205,177 @@ export default function ReviewsPage() {
 
         {/* Reviews Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 max-w-5xl mx-auto">
-          {mockReviews.map((review, index) => (
-            <motion.div
-              key={review.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{
-                duration: 0.6,
-                delay: 0.1 * index,
-                ease: [0.16, 1, 0.3, 1]
-              }}
-              whileHover={{ scale: 1.02, y: -4 }}
-              className={`relative group overflow-hidden rounded-3xl p-5 sm:p-6 lg:p-8
-                backdrop-blur-xl bg-gradient-to-br ${review.gradient}
-                border border-white/20 shadow-2xl
-                cursor-pointer transition-all duration-500
-                hover:border-white/40 hover:shadow-[0_20px_60px_rgba(255,255,255,0.15)]`}
-            >
-              {/* Shimmer effect */}
+          {mockReviews.map((review, index) => {
+            // Define color variations for each card (matching SphereCard style)
+            const colorVariants = [
+              { from: 'rgba(245,158,11,0.15)', via: 'rgba(251,191,36,0.1)', glow: 'rgba(245,158,11,0.3)' }, // Amber
+              { from: 'rgba(139,92,246,0.15)', via: 'rgba(167,139,250,0.1)', glow: 'rgba(139,92,246,0.3)' }, // Purple
+            ];
+            const colors = colorVariants[index % colorVariants.length];
+
+            return (
               <motion.div
-                className="absolute inset-0 opacity-0 group-hover:opacity-100"
-                style={{
-                  background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent)',
-                }}
-                animate={{
-                  x: ['-100%', '200%'],
-                }}
+                key={review.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
                 transition={{
-                  duration: 1.5,
-                  repeat: Infinity,
-                  repeatDelay: 1,
+                  duration: 0.6,
+                  delay: 0.1 * index,
+                  ease: [0.16, 1, 0.3, 1]
                 }}
-              />
+                whileHover={{ scale: 1.03, y: -8 }}
+                whileTap={{ scale: 0.97 }}
+                className="group relative overflow-hidden rounded-3xl p-6 sm:p-8 backdrop-blur-xl shadow-lg hover:shadow-[0_20px_80px_rgba(172,198,239,0.4)] border-2 border-white/30 hover:border-white/60 transition-all duration-500"
+                style={{
+                  background: `linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(216,236,250,0.8) 50%, ${colors.from} 100%)`,
+                }}
+              >
+                {/* Animated gradient background with accent color */}
+                <motion.div
+                  className="absolute inset-0"
+                  animate={{
+                    background: [
+                      `linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(216,236,250,0.8) 50%, ${colors.from} 100%)`,
+                      `linear-gradient(135deg, rgba(216,236,250,0.85) 0%, ${colors.via} 50%, rgba(255,255,255,0.95) 100%)`,
+                      `linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(216,236,250,0.8) 50%, ${colors.from} 100%)`,
+                    ]
+                  }}
+                  transition={{
+                    duration: 8,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                />
 
-              <div className="relative z-10">
-                {/* Title */}
-                <h3 className="text-lg sm:text-xl lg:text-2xl mb-4 sm:mb-5 lg:mb-6 text-white leading-relaxed" style={{ fontWeight: 300 }}>
-                  {review.title}
-                </h3>
+                {/* Glow effect on hover with accent color */}
+                <motion.div
+                  className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                  style={{
+                    background: `radial-gradient(circle at 50% 50%, ${colors.glow}, transparent 70%)`,
+                    filter: 'blur(30px)',
+                  }}
+                />
 
-                {/* Meta info */}
-                <div className="flex flex-col gap-2 sm:gap-3 text-white/70">
-                  <div className="flex items-center gap-2">
-                    <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4" strokeWidth={1.5} />
-                    <span className="text-xs sm:text-sm font-light">{review.date}</span>
+                {/* Animated orb effect with accent color */}
+                <motion.div
+                  className="absolute w-32 h-32 rounded-full blur-2xl opacity-0 group-hover:opacity-100"
+                  style={{
+                    background: colors.glow,
+                    top: '20%',
+                    left: '10%'
+                  }}
+                  animate={{
+                    x: [0, 50, 0],
+                    y: [0, 30, 0],
+                  }}
+                  transition={{
+                    duration: 6,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                />
+
+                {/* Border glow */}
+                <motion.div
+                  className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                  style={{
+                    boxShadow: `inset 0 0 80px ${colors.glow}, 0 0 60px ${colors.glow}`,
+                  }}
+                />
+
+                {/* Shimmer effect */}
+                <motion.div
+                  className="absolute inset-0 opacity-0 group-hover:opacity-100"
+                  animate={{
+                    background: [
+                      'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.8) 50%, transparent 100%)',
+                      'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.8) 50%, transparent 100%)',
+                    ],
+                    x: ['-100%', '200%'],
+                  }}
+                  transition={{
+                    duration: 1.5,
+                    repeat: Infinity,
+                    repeatDelay: 2,
+                  }}
+                />
+
+                <div className="relative z-10 flex flex-col h-full">
+                  {/* Icon */}
+                  <motion.div 
+                    className="mb-4 inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16
+                      rounded-2xl bg-white/40 backdrop-blur-sm
+                      border border-white/40
+                      shadow-lg self-start"
+                    whileHover={{ 
+                      rotate: [0, -8, 8, 0],
+                      scale: 1.1,
+                    }}
+                    transition={{ duration: 0.6 }}
+                  >
+                    <MessageSquare className="w-7 h-7 sm:w-8 sm:h-8 text-[#ACC6EF]" strokeWidth={1.5} style={{ filter: 'drop-shadow(0 0 8px rgba(172,198,239,0.5))' }} />
+                  </motion.div>
+
+                  {/* Title */}
+                  <h3 className="text-lg sm:text-xl mb-4 text-[#1D1D1B] leading-relaxed flex-grow" style={{ fontWeight: 300 }}>
+                    {review.title}
+                  </h3>
+
+                  {/* Date badge */}
+                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/30 backdrop-blur-sm border border-white/40 mb-4 self-start">
+                    <Clock className="w-3.5 h-3.5 text-[#1D1D1B]/70" strokeWidth={1.5} />
+                    <span className="text-xs text-[#1D1D1B]/80 font-light">{review.date}</span>
                   </div>
+
+                  {/* Watch Button - only show if link exists */}
+                  {review.link && (
+                    <div className="flex gap-3">
+                      <motion.a
+                        href={review.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl
+                          bg-[#ACC6EF]/80 hover:bg-[#ACC6EF] backdrop-blur-sm
+                          border border-[#ACC6EF]/50
+                          transition-all duration-300 shadow-md hover:shadow-lg"
+                      >
+                        <span className="text-sm text-[#1D1D1B] font-medium">Смотреть</span>
+                        <ExternalLink className="w-4 h-4 text-[#1D1D1B]" strokeWidth={1.5} />
+                      </motion.a>
+                      
+                      {review.timecodes && (
+                        <motion.button
+                          onClick={() => {
+                            setSelectedTimecodes(review.timecodes || []);
+                            setShowTimecodes(true);
+                          }}
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                          className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl
+                            bg-white/60 hover:bg-white/80 backdrop-blur-sm
+                            border border-white/50
+                            transition-all duration-300 shadow-md hover:shadow-lg"
+                        >
+                          <span className="text-sm text-[#1D1D1B] font-medium">Тайм-код</span>
+                          <List className="w-4 h-4 text-[#1D1D1B]" strokeWidth={1.5} />
+                        </motion.button>
+                      )}
+                    </div>
+                  )}
                 </div>
-              </div>
-            </motion.div>
-          ))}
+
+                {/* Gradient accent line with animation */}
+                <motion.div
+                  className="absolute bottom-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#ACC6EF] via-[#D8ECFA] to-[#ACC6EF]"
+                  initial={{ scaleX: 0, opacity: 0.5 }}
+                  whileHover={{ scaleX: 1, opacity: 1 }}
+                  transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                />
+              </motion.div>
+            );
+          })}
         </div>
 
         {/* Info message */}
@@ -236,6 +393,106 @@ export default function ReviewsPage() {
           </div>
         </motion.div>
       </div>
+
+      {/* Timecodes Modal */}
+      {showTimecodes && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md"
+          onClick={() => setShowTimecodes(false)}
+        >
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0, y: 20 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+            exit={{ scale: 0.9, opacity: 0, y: 20 }}
+            transition={{ type: "spring", duration: 0.5 }}
+            className="relative w-full max-w-2xl max-h-[80vh] overflow-hidden rounded-3xl
+              bg-gradient-to-br from-white/95 via-[#D8ECFA]/90 to-white/95
+              backdrop-blur-xl border-2 border-white/40 shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div className="sticky top-0 z-10 px-6 sm:px-8 py-6 bg-gradient-to-br from-white/95 to-[#D8ECFA]/80 backdrop-blur-xl border-b border-white/40">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="p-3 rounded-2xl bg-[#ACC6EF]/30 backdrop-blur-sm border border-[#ACC6EF]/40">
+                    <List className="w-6 h-6 text-[#1D1D1B]" strokeWidth={1.5} />
+                  </div>
+                  <h3 className="text-2xl text-[#1D1D1B]" style={{ fontWeight: 300 }}>
+                    Тайм-коды
+                  </h3>
+                </div>
+                <motion.button
+                  whileHover={{ scale: 1.1, rotate: 90 }}
+                  whileTap={{ scale: 0.9 }}
+                  onClick={() => setShowTimecodes(false)}
+                  className="p-2 rounded-full bg-white/40 hover:bg-white/60 backdrop-blur-sm
+                    border border-white/40 transition-all duration-300"
+                >
+                  <svg className="w-5 h-5 text-[#1D1D1B]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </motion.button>
+              </div>
+            </div>
+
+            {/* Timecodes List */}
+            <div className="overflow-y-auto max-h-[calc(80vh-120px)] px-6 sm:px-8 py-6">
+              <div className="space-y-3">
+                {selectedTimecodes.map((timecode, index) => {
+                  const [time, ...textParts] = timecode.split(' ');
+                  const text = textParts.join(' ');
+                  
+                  return (
+                    <motion.div
+                      key={index}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.03, duration: 0.3 }}
+                      whileHover={{ scale: 1.02, x: 4 }}
+                      className="group flex gap-4 p-4 rounded-2xl
+                        bg-white/40 hover:bg-white/60 backdrop-blur-sm
+                        border border-white/40 hover:border-[#ACC6EF]/50
+                        transition-all duration-300 cursor-pointer
+                        hover:shadow-lg"
+                    >
+                      <div className="flex-shrink-0">
+                        <div className="px-3 py-1.5 rounded-lg bg-[#ACC6EF]/30 backdrop-blur-sm
+                          border border-[#ACC6EF]/40 group-hover:bg-[#ACC6EF]/50
+                          transition-all duration-300">
+                          <span className="text-sm font-mono text-[#1D1D1B]/90 font-medium">
+                            {time}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="flex-1 flex items-center">
+                        <p className="text-sm text-[#1D1D1B]/80 leading-relaxed" style={{ fontWeight: 300 }}>
+                          {text}
+                        </p>
+                      </div>
+                    </motion.div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Gradient accent line */}
+            <motion.div
+              className="absolute bottom-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#ACC6EF] via-[#D8ECFA] to-[#ACC6EF]"
+              animate={{
+                opacity: [0.5, 1, 0.5],
+              }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+            />
+          </motion.div>
+        </motion.div>
+      )}
     </div>
   );
 }

@@ -165,71 +165,152 @@ export default function IntensivesPage() {
         </motion.div>
 
         {/* Intensives List */}
-        <div className="space-y-4 sm:space-y-6 max-w-4xl mx-auto">
-          {mockIntensives.map((intensive, index) => (
-            <motion.div
-              key={intensive.id}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{
-                duration: 0.6,
-                delay: 0.1 * index,
-                ease: [0.16, 1, 0.3, 1]
-              }}
-              whileHover={{ scale: 1.01, x: 4 }}
-              className={`relative group overflow-hidden rounded-3xl p-6 sm:p-8 lg:p-10
-                backdrop-blur-xl bg-gradient-to-br ${intensive.gradient}
-                border border-white/20 shadow-2xl
-                cursor-pointer transition-all duration-500
-                hover:border-white/40 hover:shadow-[0_20px_60px_rgba(255,255,255,0.15)]`}
-            >
-              {/* Shimmer effect */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 max-w-5xl mx-auto">
+          {mockIntensives.map((intensive, index) => {
+            // Define color variations for each card (matching ClubHome style)
+            const colorVariants = [
+              { from: 'rgba(245,158,11,0.15)', via: 'rgba(251,191,36,0.1)', glow: 'rgba(245,158,11,0.3)' }, // Amber
+              { from: 'rgba(139,92,246,0.15)', via: 'rgba(167,139,250,0.1)', glow: 'rgba(139,92,246,0.3)' }, // Purple
+              { from: 'rgba(236,72,153,0.15)', via: 'rgba(244,114,182,0.1)', glow: 'rgba(236,72,153,0.3)' }, // Pink
+              { from: 'rgba(6,182,212,0.15)', via: 'rgba(34,211,238,0.1)', glow: 'rgba(6,182,212,0.3)' }, // Cyan
+            ];
+            const colors = colorVariants[index % colorVariants.length];
+
+            return (
               <motion.div
-                className="absolute inset-0 opacity-0 group-hover:opacity-100"
-                style={{
-                  background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent)',
-                }}
-                animate={{
-                  x: ['-100%', '200%'],
-                }}
+                key={intensive.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
                 transition={{
-                  duration: 1.5,
-                  repeat: Infinity,
-                  repeatDelay: 1,
+                  duration: 0.6,
+                  delay: 0.1 * index,
+                  ease: [0.16, 1, 0.3, 1]
                 }}
-              />
+                whileHover={{ scale: 1.03, y: -8 }}
+                whileTap={{ scale: 0.97 }}
+                className="group relative overflow-hidden rounded-3xl p-6 sm:p-8 backdrop-blur-xl shadow-lg hover:shadow-[0_20px_80px_rgba(172,198,239,0.4)] border-2 border-white/30 hover:border-white/60 transition-all duration-500"
+                style={{
+                  background: `linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(216,236,250,0.8) 50%, ${colors.from} 100%)`,
+                }}
+              >
+                {/* Animated gradient background with accent color */}
+                <motion.div
+                  className="absolute inset-0"
+                  animate={{
+                    background: [
+                      `linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(216,236,250,0.8) 50%, ${colors.from} 100%)`,
+                      `linear-gradient(135deg, rgba(216,236,250,0.85) 0%, ${colors.via} 50%, rgba(255,255,255,0.95) 100%)`,
+                      `linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(216,236,250,0.8) 50%, ${colors.from} 100%)`,
+                    ]
+                  }}
+                  transition={{
+                    duration: 8,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                />
 
-              <div className="relative z-10">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-6">
-                  <div className="flex-1">
-                    {/* Title */}
-                    <h3 className="text-xl sm:text-2xl lg:text-3xl mb-2 sm:mb-3 text-white" style={{ fontWeight: 300 }}>
-                      {intensive.title}
-                    </h3>
+                {/* Glow effect on hover with accent color */}
+                <motion.div
+                  className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                  style={{
+                    background: `radial-gradient(circle at 50% 50%, ${colors.glow}, transparent 70%)`,
+                    filter: 'blur(30px)',
+                  }}
+                />
 
-                    {/* Description */}
-                    <p className="text-sm sm:text-base lg:text-lg mb-3 sm:mb-4 text-white/80 font-light leading-relaxed">
-                      {intensive.description}
-                    </p>
+                {/* Animated orb effect with accent color */}
+                <motion.div
+                  className="absolute w-32 h-32 rounded-full blur-2xl opacity-0 group-hover:opacity-100"
+                  style={{
+                    background: colors.glow,
+                    top: '20%',
+                    left: '10%'
+                  }}
+                  animate={{
+                    x: [0, 50, 0],
+                    y: [0, 30, 0],
+                  }}
+                  transition={{
+                    duration: 6,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                />
 
-                    {/* Info */}
-                    <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 text-white/70">
-                      <div className="flex items-center gap-2">
-                        <Calendar className="w-4 h-4" strokeWidth={1.5} />
-                        <span className="text-xs sm:text-sm font-light">{intensive.date}</span>
-                      </div>
-                    </div>
+                {/* Border glow */}
+                <motion.div
+                  className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                  style={{
+                    boxShadow: `inset 0 0 80px ${colors.glow}, 0 0 60px ${colors.glow}`,
+                  }}
+                />
+
+                {/* Shimmer effect */}
+                <motion.div
+                  className="absolute inset-0 opacity-0 group-hover:opacity-100"
+                  animate={{
+                    background: [
+                      'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.8) 50%, transparent 100%)',
+                      'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.8) 50%, transparent 100%)',
+                    ],
+                    x: ['-100%', '200%'],
+                  }}
+                  transition={{
+                    duration: 1.5,
+                    repeat: Infinity,
+                    repeatDelay: 2,
+                  }}
+                />
+
+                <div className="relative z-10 flex flex-col h-full">
+                  {/* Icon */}
+                  <motion.div 
+                    className="mb-4 inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16
+                      rounded-2xl bg-white/40 backdrop-blur-sm
+                      border border-white/40
+                      shadow-lg self-start"
+                    whileHover={{ 
+                      rotate: [0, -8, 8, 0],
+                      scale: 1.1,
+                    }}
+                    transition={{ duration: 0.6 }}
+                  >
+                    <Zap className="w-7 h-7 sm:w-8 sm:h-8 text-[#ACC6EF]" strokeWidth={1.5} style={{ filter: 'drop-shadow(0 0 8px rgba(172,198,239,0.5))' }} />
+                  </motion.div>
+
+                  {/* Title */}
+                  <h3 className="text-lg sm:text-xl mb-2 text-[#1D1D1B] leading-relaxed" style={{ fontWeight: 300 }}>
+                    {intensive.title}
+                  </h3>
+
+                  {/* Description */}
+                  <p className="text-sm sm:text-base mb-4 text-[#1D1D1B]/70 font-light leading-relaxed flex-grow">
+                    {intensive.description}
+                  </p>
+
+                  {/* Date badge */}
+                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/30 backdrop-blur-sm border border-white/40 mb-4 self-start">
+                    <Calendar className="w-3.5 h-3.5 text-[#1D1D1B]/70" strokeWidth={1.5} />
+                    <span className="text-xs text-[#1D1D1B]/80 font-light">{intensive.date}</span>
                   </div>
 
                   {/* Status badge */}
-                  <div className="inline-flex items-center px-4 py-2 sm:px-6 sm:py-3 rounded-full
-                    bg-white/10 backdrop-blur-sm border border-white/20 self-start sm:self-center">
-                    <span className="text-xs sm:text-sm text-white/90 font-light">Скоро</span>
+                  <div className="inline-flex items-center px-4 py-2 rounded-xl bg-[#ACC6EF]/30 backdrop-blur-sm border border-[#ACC6EF]/40 self-start">
+                    <span className="text-sm text-[#1D1D1B] font-medium">Скоро</span>
                   </div>
                 </div>
-              </div>
-            </motion.div>
-          ))}
+
+                {/* Gradient accent line with animation */}
+                <motion.div
+                  className="absolute bottom-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#ACC6EF] via-[#D8ECFA] to-[#ACC6EF]"
+                  initial={{ scaleX: 0, opacity: 0.5 }}
+                  whileHover={{ scaleX: 1, opacity: 1 }}
+                  transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                />
+              </motion.div>
+            );
+          })}
         </div>
       </div>
     </div>
