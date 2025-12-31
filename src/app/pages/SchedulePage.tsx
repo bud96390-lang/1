@@ -36,6 +36,21 @@ const scheduleData: ScheduleSection[] = [
     ]
   },
   {
+    category: 'Карта желаний',
+    icon: Sparkles,
+    gradient: 'from-purple-500/20 via-fuchsia-400/20 to-pink-500/20',
+    events: [
+      {
+        id: 'karta-1',
+        title: 'Карта желаний 2026',
+        date: '6 января',
+        time: '10:00 мск',
+        description: 'Создай план на 2026 и закрепи через визуальный якорь - время для тебя и сотворчества с Душой',
+        gradient: 'from-purple-500/20 via-fuchsia-400/20 to-pink-500/20'
+      }
+    ]
+  },
+  {
     category: 'Интенсивы',
     icon: Zap,
     gradient: 'from-cyan-500/20 via-teal-500/20 to-cyan-600/20',
@@ -43,8 +58,8 @@ const scheduleData: ScheduleSection[] = [
       {
         id: 'intensive-1',
         title: 'Техники работы над собой',
-        date: '5 января',
-        time: '11:00 - 18:00',
+        date: '9 января',
+        time: '10:00 мск',
         description: 'Базовый курс ThetaHealing, адаптированный под работу над собой с авторскими наработками',
         gradient: 'from-cyan-500/20 via-teal-500/20 to-cyan-600/20'
       }
@@ -62,14 +77,6 @@ const scheduleData: ScheduleSection[] = [
         time: '10:00 (время Москва)',
         description: 'необходимо присутствие на эфире',
         gradient: 'from-amber-500/20 via-yellow-500/20 to-amber-600/20'
-      },
-      {
-        id: 'review-2',
-        title: 'Разборы для помогающих специалистов: коучей, эзотериков различных направлений, психологов, наставников «Точка роста»',
-        date: '13 января',
-        time: '12:00 (время Москва)',
-        description: 'необходимо присутствие на эфире',
-        gradient: 'from-pink-500/20 via-rose-500/20 to-pink-600/20'
       }
     ]
   }

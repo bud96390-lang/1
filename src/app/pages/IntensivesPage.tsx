@@ -18,7 +18,7 @@ const mockIntensives: Intensive[] = [
     id: '1',
     title: 'Техники работы над собой',
     description: 'Базовый курс ThetaHealing, адаптированный под работу над собой с авторскими наработками',
-    date: '5 января',
+    date: '9 января 10:00 мск',
     status: 'upcoming',
     gradient: 'from-cyan-500/20 via-teal-500/20 to-cyan-600/20'
   },

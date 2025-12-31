@@ -2,7 +2,7 @@ import { motion } from 'motion/react';
 import { ElementParticles } from '../components/ElementParticles';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
-import { Sparkles, Headphones, Zap, MessageSquare, Radio, Moon, Calendar, BookOpen, Bell, X } from 'lucide-react';
+import { Sparkles, Headphones, Zap, MessageSquare, Radio, Moon, Calendar, BookOpen, Bell, X, ExternalLink } from 'lucide-react';
 
 interface ClubSection {
   id: string;
@@ -71,6 +71,67 @@ const clubSections: ClubSection[] = [
   },
 ];
 
+interface Gift {
+  id: string;
+  title: string;
+  description: string;
+  details?: string;
+  maxCount: number | null; // null = unlimited
+  gradient: string;
+}
+
+const gifts: Gift[] = [
+  {
+    id: 'karta-zhelaniy',
+    title: '🎁 Каникулы со смыслом',
+    description: 'Доступ к интенсиву «Карта желаний» в подарок',
+    details: 'Который пройдет 6 января',
+    maxCount: 3,
+    gradient: 'from-purple-500/20 via-fuchsia-400/15 to-pink-500/20'
+  },
+  {
+    id: 'session-discount',
+    title: '✨ Личная сессия -50%',
+    description: '12 500 рублей вместо 25 000 рублей',
+    details: 'Действует до 30.01',
+    maxCount: null,
+    gradient: 'from-amber-500/20 via-yellow-400/15 to-orange-500/20'
+  },
+  {
+    id: 'audio-scanning',
+    title: '🎤 Сканирование вашего запроса',
+    description: 'Ответ в личном аудио-сообщении',
+    details: '',
+    maxCount: null,
+    gradient: 'from-cyan-500/20 via-teal-400/15 to-blue-500/20'
+  },
+  {
+    id: 'certificate-5000',
+    title: '🎟️ Сертификат на 5000 рублей',
+    description: 'На любую услугу',
+    details: '',
+    maxCount: 2,
+    gradient: 'from-pink-500/20 via-rose-400/15 to-fuchsia-500/20'
+  },
+  {
+    id: 'subscription-discount',
+    title: '💎 Доступ к подписке «Масштаб Души»',
+    description: 'За 2500 рублей вместо 5000 рублей',
+    details: 'На 1 месяц',
+    maxCount: null,
+    gradient: 'from-violet-500/20 via-purple-400/15 to-indigo-500/20'
+  },
+  {
+    id: 'subscription-free',
+    title: '🌟 Доступ к подписке «Масштаб Души»',
+    description: 'На 1 месяц бесплатно',
+    details: '',
+    maxCount: 3,
+    gradient: 'from-emerald-500/20 via-green-400/15 to-teal-500/20'
+  }
+];
+
+// Old messages kept for reference, not used anymore
 interface Message {
   id: number;
   title: string;
@@ -79,7 +140,7 @@ interface Message {
 }
 
 const messages: Message[] = [
-  // Блок 1: Внутренний ресурс
+  // Блок 1: Внутренни�� ресурс
   {
     id: 1,
     title: 'Маяк',
@@ -101,7 +162,7 @@ const messages: Message[] = [
   {
     id: 4,
     title: 'Зеркало',
-    text: 'Тот, кого ты ищешь вовне — наставника, спасителя, партнера — уже смотрит на тебя из отражения. Дай себе то признание, которое ты ждешь от мира.',
+    text: 'Тот, кого ты ищешь ��овне — наставника, спасителя, партнера — уже смотрит на тебя из отражения. Дай себе то признание, которое ты ждешь от мира.',
     category: 'Внутренний ресурс'
   },
   {
@@ -138,7 +199,7 @@ const messages: Message[] = [
   {
     id: 10,
     title: 'Первый шаг',
-    text: 'Ты хочешь увидеть всю лестницу целиком, прежде чем начать подъем. Но туман рассеивается только в движении. Сделай один шаг. Просто один. Следующая ступенька появится.',
+    text: '��ы хочешь увидеть всю лестницу целиком, прежде чем начать подъем. Но туман рассеивается только в движении. Сделай один шаг. Просто один. Следующая ступенька появится.',
     category: 'Вектор движения'
   },
   {
@@ -169,7 +230,7 @@ const messages: Message[] = [
   {
     id: 15,
     title: 'Лабиринт',
-    text: 'Тебе кажется, что ты ходишь по кругу. Но если посмт��ть сверху, это спираль. Ты на новом уровне, просто пейзаж похож. Ты уже мудрее, чем был на прошлом витке. Продолжай идти.',
+    text: 'Тебе кажется, что ты ходишь по кругу. Но если посмтть сверху, это спираль. Ты на новом уровне, просто пейзаж похож. Ты уже мудрее, чем был на прошлом витке. Продолжай идти.',
     category: 'Мудрость момента'
   },
   {
@@ -193,7 +254,7 @@ const messages: Message[] = [
   {
     id: 19,
     title: 'Границы',
-    text: 'Твое "Нет" другим — это громкое "Да" самому себе. Очерти свои границы не стенами, а светом. Что ты больше не готов пускать в свою жизнь в 2026 году?',
+    text: 'Твое "Нет" другим — это громкое "Да" самому себе. Очерти свои границы не стенами, а светом. Что ты больше не готов пускать в свю жизнь в 2026 году?',
     category: 'Мудрость момента'
   },
   {
@@ -205,7 +266,7 @@ const messages: Message[] = [
   {
     id: 21,
     title: 'Звезда',
-    text: 'Самые смелые мечты даются нам вместе с силами на их осуществление. Если ты можешь это представить, значит, у тебя уже есть потенциал это создать. Поверь в свою масштабность.',
+    text: 'Самые смелые мечты даются нам вместе с силами на их осуществление. Если ты можешь это предс��авить, значит, у тебя уже есть потенциал это создать. Поверь в свою масштабность.',
     category: 'Мудрость момента'
   }
 ];
@@ -222,46 +283,88 @@ interface NewsItem {
 
 const newsItems: NewsItem[] = [
   {
-    id: 'news-1',
+    id: 'news-2',
     title: 'Энергетические законы',
     text: 'Откроется с 3 января 2026',
     date: '3 января',
     icon: Sparkles,
-    gradient: 'from-purple-500/30 via-violet-400/20 to-fuchsia-500/30',
+    gradient: 'from-violet-500/30 via-purple-400/20 to-indigo-500/30',
     path: '/energy-laws',
   },
   {
-    id: 'news-2',
+    id: 'news-3',
     title: 'Интенсив',
     text: 'Техники работы над собой',
-    date: '5 января',
+    date: '9 января',
     icon: Zap,
     gradient: 'from-cyan-500/30 via-teal-400/20 to-cyan-500/30',
     path: '/intensives',
-  },
-  {
-    id: 'news-3',
-    title: 'Разбор',
-    text: 'Для помогающих специалистов',
-    date: '13 января',
-    icon: MessageSquare,
-    gradient: 'from-pink-500/30 via-rose-400/20 to-purple-500/30',
-    path: '/reviews',
   },
 ];
 
 export default function ClubHome() {
   const navigate = useNavigate();
   const [activeElement, setActiveElement] = useState<'water' | 'air' | 'earth' | 'fire'>('water');
+  const [selectedGift, setSelectedGift] = useState<Gift | null>(null);
   const [selectedMessage, setSelectedMessage] = useState<Message | null>(null);
   const [isDrawing, setIsDrawing] = useState(false);
+  const [isDrawingMessage, setIsDrawingMessage] = useState(false);
+
+  // Get gift count from localStorage
+  const getGiftCount = (giftId: string): number => {
+    const count = localStorage.getItem(`gift_count_${giftId}`);
+    return count ? parseInt(count, 10) : 0;
+  };
+
+  // Increment gift count in localStorage
+  const incrementGiftCount = (giftId: string): void => {
+    const currentCount = getGiftCount(giftId);
+    localStorage.setItem(`gift_count_${giftId}`, (currentCount + 1).toString());
+  };
+
+  // Check if gift can be drawn
+  const canDrawGift = (gift: Gift): boolean => {
+    if (gift.maxCount === null) return true; // unlimited
+    return getGiftCount(gift.id) < gift.maxCount;
+  };
+
+  const drawGift = () => {
+    setIsDrawing(true);
+    setTimeout(() => {
+      // Filter available gifts
+      const availableGifts = gifts.filter(canDrawGift);
+      
+      if (availableGifts.length === 0) {
+        // All limited gifts have been drawn, pick from unlimited ones
+        const unlimitedGifts = gifts.filter(g => g.maxCount === null);
+        const randomIndex = Math.floor(Math.random() * unlimitedGifts.length);
+        const selectedGift = unlimitedGifts[randomIndex];
+        setSelectedGift(selectedGift);
+      } else {
+        // Pick a random gift from available ones
+        const randomIndex = Math.floor(Math.random() * availableGifts.length);
+        const selectedGift = availableGifts[randomIndex];
+        
+        // Increment count
+        incrementGiftCount(selectedGift.id);
+        
+        setSelectedGift(selectedGift);
+      }
+      
+      setIsDrawing(false);
+    }, 600);
+  };
+
+  const closeGift = () => {
+    setSelectedGift(null);
+  };
 
   const drawMessage = () => {
-    setIsDrawing(true);
+    setIsDrawingMessage(true);
     setTimeout(() => {
       const randomIndex = Math.floor(Math.random() * messages.length);
       setSelectedMessage(messages[randomIndex]);
-      setIsDrawing(false);
+      setIsDrawingMessage(false);
     }, 600);
   };
 
@@ -481,7 +584,13 @@ export default function ClubHome() {
             {newsItems.map((item, index) => (
               <motion.button
                 key={item.id}
-                onClick={() => navigate(item.path)}
+                onClick={() => {
+                  if (item.path.startsWith('http')) {
+                    window.open(item.path, '_blank');
+                  } else {
+                    navigate(item.path);
+                  }
+                }}
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{
@@ -571,7 +680,213 @@ export default function ClubHome() {
           </motion.h1>
         </motion.div>
 
-        {/* Draw Message Button */}
+        {/* New Year Promo Banner - Карта желаний 2026 */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+          className="mb-8 sm:mb-12 flex justify-center px-4"
+        >
+          <motion.a
+            href="http://ekaterinabeloborodova.com/karta2026"
+            target="_blank"
+            rel="noopener noreferrer"
+            whileHover={{ scale: 1.02, y: -4 }}
+            whileTap={{ scale: 0.98 }}
+            className="group relative overflow-hidden rounded-3xl w-full max-w-3xl backdrop-blur-xl shadow-2xl border-2 border-white/50 hover:border-white/80 transition-all duration-500"
+            style={{
+              background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,215,0,0.25) 20%, rgba(220,38,38,0.2) 40%, rgba(139,92,246,0.2) 60%, rgba(34,197,94,0.2) 80%, rgba(255,255,255,0.95) 100%)',
+            }}
+          >
+            {/* Animated rainbow gradient background */}
+            <motion.div
+              className="absolute inset-0"
+              animate={{
+                background: [
+                  'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,215,0,0.25) 20%, rgba(220,38,38,0.2) 40%, rgba(139,92,246,0.2) 60%, rgba(34,197,94,0.2) 80%, rgba(255,255,255,0.95) 100%)',
+                  'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(34,197,94,0.2) 20%, rgba(255,215,0,0.25) 40%, rgba(220,38,38,0.2) 60%, rgba(139,92,246,0.2) 80%, rgba(255,255,255,0.95) 100%)',
+                  'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(139,92,246,0.2) 20%, rgba(34,197,94,0.2) 40%, rgba(255,215,0,0.25) 60%, rgba(220,38,38,0.2) 80%, rgba(255,255,255,0.95) 100%)',
+                  'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,215,0,0.25) 20%, rgba(220,38,38,0.2) 40%, rgba(139,92,246,0.2) 60%, rgba(34,197,94,0.2) 80%, rgba(255,255,255,0.95) 100%)',
+                ]
+              }}
+              transition={{
+                duration: 15,
+                repeat: Infinity,
+                ease: "linear"
+              }}
+            />
+
+            {/* Glowing particles */}
+            <motion.div
+              className="absolute inset-0 opacity-30"
+              style={{
+                background: 'radial-gradient(circle at 20% 50%, rgba(255,215,0,0.4) 0%, transparent 30%), radial-gradient(circle at 80% 50%, rgba(220,38,38,0.3) 0%, transparent 30%), radial-gradient(circle at 50% 80%, rgba(139,92,246,0.3) 0%, transparent 30%)',
+              }}
+              animate={{
+                scale: [1, 1.1, 1],
+                opacity: [0.3, 0.5, 0.3],
+              }}
+              transition={{
+                duration: 4,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+            />
+
+            {/* Shimmer effect */}
+            <motion.div
+              className="absolute inset-0 opacity-0 group-hover:opacity-100"
+              animate={{
+                x: ['-100%', '200%'],
+              }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                repeatDelay: 1,
+              }}
+              style={{
+                background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.9) 50%, transparent 100%)',
+              }}
+            />
+
+            <div className="relative z-10 p-6 sm:p-8 flex flex-col sm:flex-row items-center gap-6">
+              {/* Icon with glow */}
+              <motion.div
+                animate={{
+                  rotate: [0, -5, 5, -5, 5, 0],
+                  scale: [1, 1.05, 1],
+                }}
+                transition={{
+                  duration: 3,
+                  repeat: Infinity,
+                  repeatDelay: 2
+                }}
+                className="flex-shrink-0"
+              >
+                <div className="relative">
+                  <motion.div
+                    className="absolute inset-0 rounded-full blur-xl"
+                    style={{
+                      background: 'radial-gradient(circle, rgba(255,215,0,0.6) 0%, rgba(220,38,38,0.4) 50%, transparent 70%)',
+                    }}
+                    animate={{
+                      scale: [1, 1.3, 1],
+                      opacity: [0.5, 0.8, 0.5],
+                    }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: "easeInOut"
+                    }}
+                  />
+                  <div className="relative text-6xl sm:text-7xl">
+                    ✨🎄
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Content */}
+              <div className="flex-1 text-center sm:text-left">
+                {/* Badge */}
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.3 }}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-3
+                    bg-gradient-to-r from-red-500/20 via-amber-500/20 to-green-500/20
+                    border border-white/40 backdrop-blur-sm"
+                >
+                  <span className="text-xs sm:text-sm font-medium text-[#1D1D1B]">
+                    🎁 Новогодний интенсив • 6 января
+                  </span>
+                </motion.div>
+
+                {/* Title */}
+                <h3 className="text-2xl sm:text-3xl lg:text-4xl mb-2 text-[#1D1D1B]" style={{ fontWeight: 300 }}>
+                  Карта желаний 2026
+                </h3>
+
+                {/* Description */}
+                <p className="text-sm sm:text-base lg:text-lg text-[#1D1D1B]/80 font-light mb-4">
+                  Создай план на 2026 год и закрепи через визуальный якорь
+                </p>
+
+                {/* CTA */}
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl
+                    bg-gradient-to-r from-purple-600 to-pink-600
+                    text-white font-medium shadow-lg
+                    transition-all duration-300"
+                >
+                  <span className="text-sm sm:text-base">Узнать подробнее</span>
+                  <motion.span
+                    animate={{
+                      x: [0, 4, 0],
+                    }}
+                    transition={{
+                      duration: 1.5,
+                      repeat: Infinity,
+                      ease: "easeInOut"
+                    }}
+                  >
+                    →
+                  </motion.span>
+                </motion.div>
+              </div>
+
+              {/* Decorative elements */}
+              <motion.div
+                className="absolute top-4 right-4 text-2xl sm:text-3xl"
+                animate={{
+                  rotate: [0, 10, -10, 10, 0],
+                  scale: [1, 1.1, 1],
+                }}
+                transition={{
+                  duration: 3,
+                  repeat: Infinity,
+                  repeatDelay: 1
+                }}
+              >
+                🎁
+              </motion.div>
+
+              <motion.div
+                className="absolute bottom-4 left-4 text-xl sm:text-2xl"
+                animate={{
+                  y: [0, -8, 0],
+                  rotate: [0, -10, 0],
+                }}
+                transition={{
+                  duration: 2.5,
+                  repeat: Infinity,
+                  repeatDelay: 0.5
+                }}
+              >
+                ⭐
+              </motion.div>
+            </div>
+
+            {/* Bottom accent line */}
+            <motion.div
+              className="absolute bottom-0 left-0 right-0 h-2"
+              style={{
+                background: 'linear-gradient(90deg, #FFD700 0%, #DC2626 25%, #8B5CF6 50%, #22C55E 75%, #FFD700 100%)',
+              }}
+              animate={{
+                backgroundPosition: ['0% 0%', '100% 0%'],
+              }}
+              transition={{
+                duration: 3,
+                repeat: Infinity,
+                ease: "linear"
+              }}
+            />
+          </motion.a>
+        </motion.div>
+
+        {/* Draw Gift Button */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -579,8 +894,90 @@ export default function ClubHome() {
           className="mb-8 sm:mb-12 flex justify-center"
         >
           <motion.button
-            onClick={drawMessage}
+            onClick={drawGift}
             disabled={isDrawing}
+            whileHover={{ scale: 1.05, y: -4 }}
+            whileTap={{ scale: 0.95 }}
+            className="group relative overflow-hidden rounded-full px-8 py-4 sm:px-10 sm:py-5 text-left backdrop-blur-xl shadow-2xl border-2 border-white/40 hover:border-white/70 transition-all duration-500"
+            style={{
+              background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,215,0,0.2) 30%, rgba(220,38,38,0.15) 60%, rgba(34,197,94,0.15) 100%)',
+            }}
+          >
+            {/* Animated gradient background - New Year colors */}
+            <motion.div
+              className="absolute inset-0"
+              animate={{
+                background: [
+                  'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,215,0,0.2) 30%, rgba(220,38,38,0.15) 60%, rgba(34,197,94,0.15) 100%)',
+                  'linear-gradient(135deg, rgba(34,197,94,0.15) 0%, rgba(255,255,255,0.95) 30%, rgba(255,215,0,0.2) 60%, rgba(220,38,38,0.15) 100%)',
+                  'linear-gradient(135deg, rgba(220,38,38,0.15) 0%, rgba(34,197,94,0.15) 30%, rgba(255,255,255,0.95) 60%, rgba(255,215,0,0.2) 100%)',
+                  'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,215,0,0.2) 30%, rgba(220,38,38,0.15) 60%, rgba(34,197,94,0.15) 100%)',
+                ]
+              }}
+              transition={{
+                duration: 10,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+            />
+
+            {/* Sparkle particles */}
+            <motion.div
+              className="absolute inset-0 opacity-0 group-hover:opacity-100"
+              style={{
+                background: 'radial-gradient(circle at 30% 50%, rgba(255,215,0,0.4) 0%, transparent 50%), radial-gradient(circle at 70% 50%, rgba(220,38,38,0.3) 0%, transparent 50%)',
+              }}
+              animate={{
+                scale: [1, 1.2, 1],
+                opacity: [0, 0.5, 0],
+              }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+            />
+
+            {/* Shimmer effect */}
+            <motion.div
+              className="absolute inset-0 opacity-0 group-hover:opacity-100"
+              animate={{
+                x: ['-100%', '200%'],
+              }}
+              transition={{
+                duration: 1.5,
+                repeat: Infinity,
+                repeatDelay: 2,
+              }}
+              style={{
+                background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.9) 50%, transparent 100%)',
+              }}
+            />
+
+            <div className="relative z-10 flex items-center gap-3 sm:gap-4">
+              <motion.div
+                animate={isDrawing ? { rotate: 360 } : { rotate: [0, -10, 10, -10, 10, 0] }}
+                transition={isDrawing ? { duration: 0.6, ease: "easeInOut" } : { duration: 2, repeat: Infinity, repeatDelay: 3 }}
+              >
+                <Sparkles className="w-6 h-6 sm:w-7 sm:h-7 text-amber-500" strokeWidth={1.5} style={{ filter: 'drop-shadow(0 0 8px rgba(245,158,11,0.6))' }} />
+              </motion.div>
+              <span className="text-lg sm:text-xl text-[#1D1D1B]" style={{ fontWeight: 300 }}>
+                {isDrawing ? '🎁 Выбираю подарок...' : '🎁 Получить подарок'}
+              </span>
+            </div>
+          </motion.button>
+        </motion.div>
+
+        {/* Draw Message Button */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+          className="mb-8 sm:mb-12 flex justify-center"
+        >
+          <motion.button
+            onClick={drawMessage}
+            disabled={isDrawingMessage}
             whileHover={{ scale: 1.05, y: -4 }}
             whileTap={{ scale: 0.95 }}
             className="group relative overflow-hidden rounded-full px-8 py-4 sm:px-10 sm:py-5 text-left backdrop-blur-xl shadow-2xl border-2 border-white/40 hover:border-white/70 transition-all duration-500"
@@ -623,13 +1020,13 @@ export default function ClubHome() {
 
             <div className="relative z-10 flex items-center gap-3 sm:gap-4">
               <motion.div
-                animate={isDrawing ? { rotate: 360 } : {}}
+                animate={isDrawingMessage ? { rotate: 360 } : {}}
                 transition={{ duration: 0.6, ease: "easeInOut" }}
               >
                 <Sparkles className="w-6 h-6 sm:w-7 sm:h-7 text-[#ACC6EF]" strokeWidth={1.5} style={{ filter: 'drop-shadow(0 0 8px rgba(172,198,239,0.5))' }} />
               </motion.div>
               <span className="text-lg sm:text-xl text-[#1D1D1B]" style={{ fontWeight: 300 }}>
-                {isDrawing ? 'Вытягиваю...' : 'Вытянуть послание'}
+                {isDrawingMessage ? 'Вытягиваю...' : 'Вытянуть послание'}
               </span>
             </div>
           </motion.button>
@@ -790,6 +1187,240 @@ export default function ClubHome() {
         </motion.div>
       </div>
 
+      {/* Gift Modal */}
+      {selectedGift && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-md bg-[#2E5C8A]/60"
+          onClick={closeGift}
+        >
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+            onClick={(e) => e.stopPropagation()}
+            className="relative max-w-2xl w-full rounded-3xl backdrop-blur-xl shadow-2xl border-2 border-white/40 overflow-hidden"
+            style={{
+              background: 'linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(255,240,220,0.95) 50%, rgba(220,38,38,0.15) 100%)',
+            }}
+          >
+            {/* Animated gradient background - New Year theme */}
+            <motion.div
+              className="absolute inset-0"
+              animate={{
+                background: [
+                  'linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(255,240,220,0.95) 50%, rgba(220,38,38,0.15) 100%)',
+                  'linear-gradient(135deg, rgba(255,240,220,0.95) 0%, rgba(34,197,94,0.15) 50%, rgba(255,255,255,0.98) 100%)',
+                  'linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(255,215,0,0.2) 50%, rgba(220,38,38,0.15) 100%)',
+                  'linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(255,240,220,0.95) 50%, rgba(220,38,38,0.15) 100%)',
+                ]
+              }}
+              transition={{
+                duration: 10,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+            />
+
+            {/* Glowing orbs - golden and red */}
+            <motion.div
+              className="absolute w-64 h-64 rounded-full blur-3xl"
+              style={{
+                background: 'rgba(255,215,0,0.3)',
+                top: '-10%',
+                right: '-10%'
+              }}
+              animate={{
+                scale: [1, 1.2, 1],
+                opacity: [0.3, 0.5, 0.3],
+              }}
+              transition={{
+                duration: 5,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+            />
+            
+            <motion.div
+              className="absolute w-48 h-48 rounded-full blur-3xl"
+              style={{
+                background: 'rgba(220,38,38,0.25)',
+                bottom: '-5%',
+                left: '-5%'
+              }}
+              animate={{
+                scale: [1, 1.3, 1],
+                opacity: [0.2, 0.4, 0.2],
+              }}
+              transition={{
+                duration: 6,
+                repeat: Infinity,
+                ease: "easeInOut",
+                delay: 1
+              }}
+            />
+
+            {/* Close button */}
+            <motion.button
+              onClick={closeGift}
+              whileHover={{ scale: 1.1, rotate: 90 }}
+              whileTap={{ scale: 0.9 }}
+              className="absolute top-4 right-4 sm:top-6 sm:right-6 z-20 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-full bg-white/80 backdrop-blur-sm border border-white/40 shadow-lg hover:bg-white transition-colors duration-300"
+            >
+              <X className="w-5 h-5 sm:w-6 sm:h-6 text-[#1D1D1B]" strokeWidth={1.5} />
+            </motion.button>
+
+            {/* Content */}
+            <div className="relative z-10 p-8 sm:p-12">
+              {/* Gift Icon */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.2, type: "spring", duration: 0.6 }}
+                className="flex justify-center mb-6"
+              >
+                <motion.div
+                  animate={{ 
+                    rotate: [0, -10, 10, -10, 10, 0],
+                    scale: [1, 1.1, 1]
+                  }}
+                  transition={{ 
+                    duration: 2,
+                    repeat: Infinity,
+                    repeatDelay: 1
+                  }}
+                  className="text-6xl sm:text-7xl"
+                >
+                  🎁
+                </motion.div>
+              </motion.div>
+
+              {/* Title */}
+              <motion.h2
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="text-2xl sm:text-3xl mb-4 text-[#1D1D1B] text-center"
+                style={{ fontWeight: 300 }}
+              >
+                {selectedGift.title}
+              </motion.h2>
+
+              {/* Description */}
+              <motion.p
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+                className="text-lg sm:text-xl text-[#1D1D1B]/90 leading-relaxed font-light text-center mb-3"
+              >
+                {selectedGift.description}
+              </motion.p>
+
+              {/* Details */}
+              {selectedGift.details && (
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.5 }}
+                  className="text-base text-[#1D1D1B]/70 font-light text-center mb-8"
+                >
+                  {selectedGift.details}
+                </motion.p>
+              )}
+
+              {/* Decorative sparkles */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.6, duration: 0.5 }}
+                className="flex justify-center gap-3 mb-8"
+              >
+                <motion.div
+                  animate={{
+                    y: [0, -10, 0],
+                    rotate: [0, 180, 360],
+                  }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                >
+                  <Sparkles className="w-6 h-6 text-amber-500" strokeWidth={1.5} />
+                </motion.div>
+                <motion.div
+                  animate={{
+                    y: [0, -15, 0],
+                    rotate: [0, -180, -360],
+                  }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay: 0.5
+                  }}
+                >
+                  <Sparkles className="w-8 h-8 text-red-500" strokeWidth={1.5} />
+                </motion.div>
+                <motion.div
+                  animate={{
+                    y: [0, -10, 0],
+                    rotate: [0, 180, 360],
+                  }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay: 1
+                  }}
+                >
+                  <Sparkles className="w-6 h-6 text-green-500" strokeWidth={1.5} />
+                </motion.div>
+              </motion.div>
+
+              {/* Screenshot instruction */}
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.7 }}
+                className="text-center"
+              >
+                <p className="text-sm sm:text-base text-[#1D1D1B]/80 font-light mb-4">
+                  Сделай скриншот своей карточки и
+                </p>
+                
+                {/* Telegram button */}
+                <motion.a
+                  href="https://t.me/beloborodova_job"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-xl
+                    bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600
+                    text-white font-medium shadow-lg hover:shadow-xl
+                    transition-all duration-300"
+                >
+                  <span>Отправь мне в сообщения!</span>
+                  <ExternalLink className="w-4 h-4" strokeWidth={2} />
+                </motion.a>
+              </motion.div>
+
+              {/* Decorative bottom line */}
+              <motion.div
+                initial={{ scaleX: 0 }}
+                animate={{ scaleX: 1 }}
+                transition={{ delay: 0.8, duration: 0.6 }}
+                className="mt-8 h-1 bg-gradient-to-r from-transparent via-amber-400 to-transparent rounded-full"
+              />
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+
       {/* Message Modal */}
       {selectedMessage && (
         <motion.div
@@ -859,16 +1490,27 @@ export default function ClubHome() {
 
             {/* Content */}
             <div className="relative z-10 p-8 sm:p-12">
-              {/* Category badge */}
+              {/* Message Icon */}
               <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="inline-flex items-center px-4 py-2 rounded-full bg-[#ACC6EF]/30 backdrop-blur-sm border border-[#ACC6EF]/50 mb-6"
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.2, type: "spring", duration: 0.6 }}
+                className="flex justify-center mb-6"
               >
-                <span className="text-sm text-[#1D1D1B]/80 font-light">
-                  {selectedMessage.category}
-                </span>
+                <motion.div
+                  animate={{ 
+                    rotate: [0, -10, 10, -10, 10, 0],
+                    scale: [1, 1.1, 1]
+                  }}
+                  transition={{ 
+                    duration: 2,
+                    repeat: Infinity,
+                    repeatDelay: 1
+                  }}
+                  className="text-6xl sm:text-7xl"
+                >
+                  📬
+                </motion.div>
               </motion.div>
 
               {/* Title */}
@@ -876,21 +1518,33 @@ export default function ClubHome() {
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
-                className="text-3xl sm:text-4xl mb-6 text-[#1D1D1B]"
-                style={{ fontWeight: 200 }}
+                className="text-2xl sm:text-3xl mb-4 text-[#1D1D1B] text-center"
+                style={{ fontWeight: 300 }}
               >
                 {selectedMessage.title}
               </motion.h2>
 
-              {/* Text */}
+              {/* Description */}
               <motion.p
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
-                className="text-base sm:text-lg text-[#1D1D1B]/90 leading-relaxed font-light"
+                className="text-lg sm:text-xl text-[#1D1D1B]/90 leading-relaxed font-light text-center mb-3"
               >
                 {selectedMessage.text}
               </motion.p>
+
+              {/* Category */}
+              {selectedMessage.category && (
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.5 }}
+                  className="text-base text-[#1D1D1B]/70 font-light text-center mb-8"
+                >
+                  {selectedMessage.category}
+                </motion.p>
+              )}
 
               {/* Decorative sparkle */}
               <motion.div
@@ -912,10 +1566,15 @@ export default function ClubHome() {
                   <Sparkles className="w-8 h-8 text-[#ACC6EF]" strokeWidth={1.5} style={{ filter: 'drop-shadow(0 0 10px rgba(172,198,239,0.6))' }} />
                 </motion.div>
               </motion.div>
-            </div>
 
-            {/* Gradient accent line */}
-            <div className="absolute bottom-0 left-0 right-0 h-2 bg-gradient-to-r from-[#ACC6EF] via-[#D8ECFA] to-[#ACC6EF]" />
+              {/* Decorative bottom line */}
+              <motion.div
+                initial={{ scaleX: 0 }}
+                animate={{ scaleX: 1 }}
+                transition={{ delay: 0.7, duration: 0.6 }}
+                className="mt-6 h-2 bg-gradient-to-r from-[#ACC6EF] via-[#D8ECFA] to-[#ACC6EF]"
+              />
+            </div>
           </motion.div>
         </motion.div>
       )}
